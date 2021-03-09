@@ -5,17 +5,33 @@ items = read_items(FilePath.ITEM_PATH.value)
 
 
 class Checkout:
+    """
+    Checkout class
+
+    The interface to billing backend
+    """
+
     def __init__(self, rules):
         self._rules = read_rules(rules)
         self._item_list = list()
         self.bill = None
 
     def scan(self, item_id):
+        """
+        Scans item
+
+        :param item_id: Item id
+        """
         if item_id not in list(set(items['ITEM_ID'])):
             raise ValueError('Invalid Item ID')
         self._item_list.append(item_id)
 
     def total(self):
+        """
+        Calculates total and processes bill
+
+        :return: Total amount
+        """
         from store.core.bill import BillProcessor
         processor = BillProcessor(items, self._rules)
         processor.process(self._item_list)
