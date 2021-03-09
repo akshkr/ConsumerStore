@@ -27,8 +27,10 @@ class BillProcessor:
 
             if rule['DISCOUNT_PERCENT'] > 0:
                 item_dict['total'] *= ((100-rule['DISCOUNT_PERCENT'])/100)
+
             elif rule['NEW_PRICE'] > 0:
                 item_dict['total'] = rule['NEW_PRICE'] * item_dict['qty']
+
             elif rule['FREE_ITEM_QTY'] != 0:
                 total_free_nos = int(item_dict['qty']/rule['MINIMUM_QTY'])
                 price = list(self.items.loc[self.items['ITEM_ID'] == item]['PRICE'])[0]
@@ -36,25 +38,16 @@ class BillProcessor:
 
             elif literal_eval(rule['FREE_ITEM_ID']):
                 for i in literal_eval(rule['FREE_ITEM_ID']):
-                    self.free_items[i] = {'qty': int(item_dict['qty']/rule['MINIMUM_QTY']), 'total': 0}
+                    price = list(self.items.loc[self.items['ITEM_ID'] == i]['PRICE'])[0]
+                    total_free_nos = int(item_dict['qty'] / rule['MINIMUM_QTY'])
+                    self.free_items[i] = {'qty': int(item_dict['qty']/rule['MINIMUM_QTY']), 'total': price * total_free_nos}
 
-            return item_dict
-
-        else:
-            return item_dict
+        return item_dict
 
     def process(self, item_list):
         self.checkout_items = item_list
         self._count_items()
-        # print(self.checkout_items)
-        # print(self.items)
-        # print(self.rules)
+
         for item, details in self.checkout_items.items():
             self.checkout_items[item].update({'total': self._check_total(item, details['qty'])})
             self.checkout_items[item] = self._apply_discount(item, details)
-
-        print(self.checkout_items)
-        print(self.free_items)
-        # Target
-        # KEY(item) : VALUE {qty: , total}
-        # print(self.checkout_items)

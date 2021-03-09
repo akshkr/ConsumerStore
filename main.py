@@ -4,16 +4,11 @@ from store.references import FilePath
 rules = FilePath.RULES_PATH.value
 
 co = Checkout(rules)
-co.scan('nsh')
-co.scan('nsh')
-co.scan('nsh')
-co.scan('mch')
-co.scan('cac')
+# items = ['nsh', 'nsh', 'nsh', 'mch']
+# items = ['nsh', 'stv', 'stv', 'nsh', 'stv', 'stv', 'stv']
+items = ['cac', 'mch', 'stv']
+for i in items:
+    co.scan(i)
 
-co.scan('stv')
-co.scan('stv')
-co.scan('stv')
-co.scan('stv')
-co.scan('stv')
-
-co.total()
+print(co.total())
+print(co.bill)
